@@ -1,55 +1,58 @@
-body {
-  font: 14px "Century Gothic", Futura, sans-serif;
-  margin: 20px;
+body, p, ol li {
+    font: 14px "Century Gothic", Futura, sans-serif;
+    font-family: 'Montserrat', sans-serif;
 }
 
-ol, ul {
-  padding-left: 30px;
+p {
+    font-weight: 400;
+    margin-left: 0px;
+    margin-right: 0px;
 }
 
-.board-row:after {
-  clear: both;
-  content: "";
-  display: table;
+.code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+    font-size: 16px;
 }
 
-.status {
-  margin-bottom: 10px;
+.black-code {
+    color: white;
+    background-color: black;
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
-.square {
-  background: #fff;
-  border: 1px solid #999;
-  float: left;
-  font-size: 24px;
-  font-weight: bold;
-  line-height: 34px;
-  height: 34px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  text-align: center;
-  width: 34px;
+.menu-lateral {
+    background-color: #2b2c2f;
+    min-height: 100vh;
 }
 
-.square:focus {
-  outline: none;
+.menu-lateral .nav-link {
+    color: white;
+    font-family: 'Montserrat'
 }
 
-.kbd-navigation .square:focus {
-  background: #ddd;
+.menu-lateral .nav-link:hover {
+    font-weight: 800;
 }
 
-.game {
-  display: flex;
-  flex-direction: row;
+.cuerpo {
+    background-color: #f7f7f7;
+    min-height: 100vh;
 }
 
-.game-info {
-  margin-left: 20px;
+.menu-lateral .titulo-menu {
+    margin-top: 10px;
+    color: white;
+    text-align: center;
 }
 
-.side-menu {
-    background-color: red;
-    min-height: 300px;
+.contenido-cuerpo {
+    padding: 20px 30px;
+}
+
+.contenido-cuerpo .titulo-contenido-cuerpo {
+    text-align: center;
+    margin-bottom: 20px;
 }
