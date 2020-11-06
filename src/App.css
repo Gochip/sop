@@ -25,7 +25,6 @@ p {
 
 .menu-lateral {
     background-color: #2b2c2f;
-    min-height: 100vh;
 }
 
 .menu-lateral .nav-link {
@@ -55,4 +54,32 @@ p {
 .contenido-cuerpo .titulo-contenido-cuerpo {
     text-align: center;
     margin-bottom: 20px;
+}
+
+.fade-enter {
+    opacity: 0.01;
+}
+
+.fade-enter.fade-enter-active {
+    opacity: 1;
+    transition: opacity 300ms ease-in;
+}
+
+.fade-exit {
+    opacity: 1;
+}
+
+.fade-exit.fade-exit-active {
+    opacity: 0.01;
+    transition: opacity 300ms ease-in;
+}
+
+@media screen and (max-width: 424px) {
+    .menu-lateral {
+        padding-bottom: 20px;
+    }
+    .contenido-cuerpo {
+        padding: 10px 10px;
+        text-align: justify;
+    }
 }

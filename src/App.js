@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
@@ -6,6 +6,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -230,7 +231,7 @@ class ContenidoMostrarColores extends React.Component {
             <div className="contenido-cuerpo">
                 <h4 className="titulo-contenido-cuerpo">Mostrar colores</h4>
                 <p>
-                    Se pueden mostrar colores en la terminal usando ciertas combinaciones de caracteres. A continuación se presenta un ejemplo mostrando en colores rojo y verde.
+                    Se pueden mostrar colores en la terminal usando ciertas combinaciones de caracteres. A continuación se presenta un ejemplo mostrando un texto en colores rojo, verde y blanco.
                 </p>
                 <pre className="code black-code">
 {`#!/bin/bash
@@ -368,10 +369,39 @@ class ContenidoRenombrarUnConjuntoDeArchivos extends React.Component {
         return (
             <div className="contenido-cuerpo">
                 <h4 className="titulo-contenido-cuerpo">Renombrar un conjunto de archivos</h4>
-                <p></p>
+                <p>En determinadas ocasiones me fue útil saber esto. Supongamos que tenemos una serie de archivos como la siguiente:</p>
                 <pre className="code black-code">
-{`find . -name '*.csv' -exec sh -c 'mv "$1" "\${1%.csv}.pdf"' _ {} \\;`}
+{`archivo1  archivo2  archivo3  archivo4  archivo5`}
                 </pre>
+                <p>Notar que todos esos archivos no tienen extensión. Si quisiéramos agregarle la extensión .txt sin hacerlo de a uno por vez, podríamos hacerlo con el comando find y el parámetro exec. Veamos el comando y luego vamos a explicarlo:</p>
+                <pre className="code black-code">
+{`find . -type f -exec mv {} {}.txt \;`}
+                </pre>
+                <p>
+                    El comando find busca archivos desde un directorio que cumpla con la condición que requerimos. Por cada archivo que cumpla esa condición se puede ejecutar otro comando (esto último, lo podemos hacer gracias al parámetro exec). En el ejemplo anterior, el comando find busca desde el directorio actual a todos los archivos regulares y, para cada uno de ellos, ejecuta el comando mv.
+                </p>
+                <div class="row">
+                    <div className="offset-lg-2 col-lg-2 code">
+                        find .
+                    </div>
+                    <div className="col-lg-2 code">
+                        -type f
+                    </div>
+                    <div className="col-lg-2 code">
+                        -exec mv {} {}.txt ;
+                    </div>
+                </div>
+                <div class="row">
+                    <div className="offset-lg-2 col-lg-2">
+                        <p>Directorio desde donde comienza la búsqueda.</p>
+                    </div>
+                    <div className="col-lg-2">
+                        <p>Condición para buscar archivos.</p>
+                    </div>
+                    <div className="col-lg-2">
+                        <p>Comando que se va a ejecutar por cada archivo.</p>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -444,18 +474,26 @@ class Contenedor extends React.Component {
 }
 
 export default class App extends React.Component {
+
     render() {
         return (
             <BrowserRouter>
-                <Switch>
-                    <Route path={ PATH_INICIO } exact render={() => <Contenedor />} />
-                    <Route path={ PATH_CREAR_UN_MENU } exact render={() => <Contenedor />} />
-                    <Route path={ PATH_ELIMINAR_LA_CABECERA_DE_UN_ARCHIVO } exact render={() => <Contenedor />} />
-                    <Route path={ PATH_ELIMINAR_ESPACIOS_REPETIDOS } exact render={() => <Contenedor />} />
-                    <Route path={ PATH_MOSTRAR_COLORES } exact render={() => <Contenedor />} />
-                    <Route path={ PATH_REALIZAR_OPERACIONES_ARITMETICAS } exact render={() => <Contenedor />} />
-                    <Route path={ PATH_RENOMBRAR_UN_CONJUNTO_DE_ARCHIVOS } exact render={() => <Contenedor />} />
-                </Switch>
+                <TransitionGroup>
+                    <CSSTransition
+                      key={window.location.key}
+                      timeout={{ enter: 300, exit: 300 }}
+                    >
+                        <Switch>
+                            <Route path={ PATH_INICIO } exact render={() => <Contenedor />} />
+                            <Route path={ PATH_CREAR_UN_MENU } exact render={() => <Contenedor />} />
+                            <Route path={ PATH_ELIMINAR_LA_CABECERA_DE_UN_ARCHIVO } exact render={() => <Contenedor />} />
+                            <Route path={ PATH_ELIMINAR_ESPACIOS_REPETIDOS } exact render={() => <Contenedor />} />
+                            <Route path={ PATH_MOSTRAR_COLORES } exact render={() => <Contenedor />} />
+                            <Route path={ PATH_REALIZAR_OPERACIONES_ARITMETICAS } exact render={() => <Contenedor />} />
+                            <Route path={ PATH_RENOMBRAR_UN_CONJUNTO_DE_ARCHIVOS } exact render={() => <Contenedor />} />
+                        </Switch>
+                    </CSSTransition>
+                </TransitionGroup>
             </BrowserRouter>
         );
     }
