@@ -37,7 +37,7 @@ class ContenidoInicio extends React.Component {
             <div className="contenido-cuerpo">
             <h4 className="titulo-contenido-cuerpo">¡Hola!</h4>
             <p>
-                En este sitio encontrarás tips o <b>hacks</b> para mejorar tu conocimiento en el lenguaje Bash y en el sistema operativo Linux.
+                En este sitio encontrarás tips o <b>hacks</b> para mejorar tu conocimiento en el lenguaje Bash utilizando los sistemas operativos de Linux Ubuntu, Linux Fedora y MacOS (en sus diferentes versiones).
             </p>
             <p>
                 Espero te resulte útil este contenido. Cualquier comentario me lo podés hacer a mi cuenta de Twitter: <a href="https://twitter.com/GochiParisi" target="_blank">@GochiParisi</a>.
@@ -220,6 +220,11 @@ drwxr-xr-x 15 root root 4096 may 30 2016 var`}</pre>
 {`ls -l / | tr -s " " | cut -d ' ' -f 3`}
             </pre>
             
+            <p>
+                <b>Tip para usuarios de MacOS: </b>
+                <span>Tené cuidado con presionar la tecla <i>espacio</i> junto con la tecla <i>Alt</i> ya que generará un <a href="https://en.wikipedia.org/wiki/Non-breaking_space)" target="_blank" rel="noopener noreferrer">non-breaking space</a> y el comando anterior va a fallarte, probablemente con un "command not found".</span>
+            </p>
+            
             </div>
         );
     }
@@ -254,7 +259,7 @@ echo -e "\${SIN_COLOR}Le quitamos el color, será el color por default."`}
                     Le quitamos el color, será el color por default.
                 </div>
                 <p>
-                    Se pueden consultar más colores en <a href="https://gist.github.com/jonsuh/3c89c004888dfc7352be">https://gist.github.com/jonsuh/3c89c004888dfc7352be</a>
+                    Se pueden consultar más colores en <a href="https://gist.github.com/jonsuh/3c89c004888dfc7352be" target="_blank" rel="noopener noreferer">https://gist.github.com/jonsuh/3c89c004888dfc7352be</a>
                 </p>
             </div>
         );
@@ -375,31 +380,31 @@ class ContenidoRenombrarUnConjuntoDeArchivos extends React.Component {
                 </pre>
                 <p>Notar que todos esos archivos no tienen extensión. Si quisiéramos agregarle la extensión .txt sin hacerlo de a uno por vez, podríamos hacerlo con el comando find y el parámetro exec. Veamos el comando y luego vamos a explicarlo:</p>
                 <pre className="code black-code">
-{`find . -type f -exec mv {} {}.txt \;`}
+{`find . -type f -exec mv {} {}.txt \\;`}
                 </pre>
                 <p>
                     El comando find busca archivos desde un directorio que cumpla con la condición que requerimos. Por cada archivo que cumpla esa condición se puede ejecutar otro comando (esto último, lo podemos hacer gracias al parámetro exec). En el ejemplo anterior, el comando find busca desde el directorio actual a todos los archivos regulares y, para cada uno de ellos, ejecuta el comando mv.
                 </p>
                 <div class="row">
-                    <div className="offset-lg-2 col-lg-2 code">
+                    <div className="offset-lg-1 col-lg-3 code" style={{'text-align': 'center'}}>
                         find .
                     </div>
-                    <div className="col-lg-2 code">
+                    <div className="col-lg-3 code" style={{'text-align': 'center'}}>
                         -type f
                     </div>
-                    <div className="col-lg-2 code">
-                        -exec mv {} {}.txt ;
+                    <div className="col-lg-3 code" style={{'text-align': 'center'}}>
+                        -exec mv {} {}.txt \;
                     </div>
                 </div>
                 <div class="row">
-                    <div className="offset-lg-2 col-lg-2">
-                        <p>Directorio desde donde comienza la búsqueda.</p>
+                    <div className="offset-lg-1 col-lg-3">
+                        <p style={{'text-align': 'left'}}>Directorio desde donde comienza la búsqueda.</p>
                     </div>
-                    <div className="col-lg-2">
-                        <p>Condición para buscar archivos.</p>
+                    <div className="col-lg-3">
+                        <p style={{'text-align': 'left'}}>Condición para buscar archivos.</p>
                     </div>
-                    <div className="col-lg-2">
-                        <p>Comando que se va a ejecutar por cada archivo.</p>
+                    <div className="col-lg-3">
+                        <p style={{'text-align': 'left'}}>Comando que se va a ejecutar por cada archivo.</p>
                     </div>
                 </div>
             </div>
@@ -431,7 +436,7 @@ class Cuerpo extends React.Component {
         }
         
         return  (
-            <Col className="cuerpo" xs lg="10">
+            <Col className="cuerpo" xs="12" lg="10">
                 { componenteAMostrar }
             </Col>
         );
@@ -446,8 +451,8 @@ class Menu extends React.Component {
 
     render() {
         return (
-            <Col className="menu-lateral" xs lg="2">
-                <h3 className="titulo-menu">Linux - Bash</h3>
+            <Col className="menu-lateral" xs="12" lg="2">
+                <h3 className="titulo-menu">Menú</h3>
                 <Nav defaultActiveKey="/crear-un-menu" className="flex-column mt-3" onSelect={this.onSelect}>
                     <Nav.Link eventKey={ PATH_INICIO }>Inicio</Nav.Link>
                     <Nav.Link eventKey={ PATH_CREAR_UN_MENU }>Crear un menú</Nav.Link>
