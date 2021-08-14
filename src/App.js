@@ -7,7 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
 import { TransitionGroup, CSSTransition } from "react-transition-group";
-
+import{ PanelLogin } from './Login'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 /*import ReactGA from 'react-ga';
@@ -28,10 +28,15 @@ const PATH_ELIMINAR_ESPACIOS_REPETIDOS = "/eliminar-espacios-repetidos";
 const PATH_MOSTRAR_COLORES = "/mostrar-colores";
 const PATH_REALIZAR_OPERACIONES_ARITMETICAS = '/realizar-operaciones-aritmeticas'
 const PATH_RENOMBRAR_UN_CONJUNTO_DE_ARCHIVOS = '/renombrar-un-conjunto-de-archivos'
+const PATH_LOGIN = "/login"
 
 
 // Contenidos de cada enlace de información.
 class ContenidoInicio extends React.Component {
+    irAPracticar() {
+        window.location.href = "login"
+    }
+
     render() {
         return (
             <div className="contenido-cuerpo">
@@ -42,6 +47,13 @@ class ContenidoInicio extends React.Component {
             <p>
                 Espero te resulte útil este contenido. Cualquier comentario me lo podés hacer a mi cuenta de Twitter: <a href="https://twitter.com/GochiParisi" target="_blank">@GochiParisi</a>.
             </p>
+
+            <h4 style={{textAlign: "center", marginTop: 40 + "px"}}>
+                ¡Quiero practicar Bash ahora mismo!
+            </h4>
+            <div style={{textAlign: "center", marginTop: 15 + "px"}}>
+                <button type="button" onClick={this.irAPracticar}>Practicar</button>
+            </div>
             </div>
         );
     }
@@ -122,7 +134,7 @@ Paraguay,6956000,406752
 Bolivia,11350000,1099000
 Perú,31990000,1285000`}</pre>
             <p>
-                Entonces si necesitamos trabajar con los datos pero queremos ignorar a la cabecera se puede utilizar el comando tail para ello. Por ejemplo:                
+                Entonces si necesitamos trabajar con los datos pero queremos ignorar a la cabecera se puede utilizar el comando tail para ello. Por ejemplo:
             </p>
             <pre className="code black-code">
 {`tail -n +2 paises`}
@@ -219,12 +231,12 @@ drwxr-xr-x 15 root root 4096 may 30 2016 var`}</pre>
             <pre className="code black-code">
 {`ls -l / | tr -s " " | cut -d ' ' -f 3`}
             </pre>
-            
+
             <p>
                 <b>Tip para usuarios de MacOS: </b>
                 <span>Tené cuidado con presionar la tecla <i>espacio</i> junto con la tecla <i>Alt</i> ya que generará un <a href="https://en.wikipedia.org/wiki/Non-breaking_space)" target="_blank" rel="noopener noreferrer">non-breaking space</a> y el comando anterior va a fallarte, probablemente con un "command not found".</span>
             </p>
-            
+
             </div>
         );
     }
@@ -335,7 +347,7 @@ echo $r`}
                 <p>
                     Notar que hay un espacio entre los operadores y operandos, esto es porque cada uno de ellos es un parámetro para el comando expr.
                 </p>
-                
+
                 <h5>Usando la construcción <b>$(( x op y ))</b></h5>
                 <p>
                     Por ejemplo, para sumar, restar, dividir y multiplicar:
@@ -416,7 +428,7 @@ class ContenidoRenombrarUnConjuntoDeArchivos extends React.Component {
 class Cuerpo extends React.Component {
     render() {
         var path = window.location.pathname;
-        
+
         //ReactGA.pageview(path);
         var componenteAMostrar = <ContenidoInicio />;
         if (path === PATH_INICIO) {
@@ -434,7 +446,7 @@ class Cuerpo extends React.Component {
         } else if (path === PATH_RENOMBRAR_UN_CONJUNTO_DE_ARCHIVOS) {
             componenteAMostrar = <ContenidoRenombrarUnConjuntoDeArchivos />;
         }
-        
+
         return  (
             <Col className="cuerpo" xs="12" lg="10">
                 { componenteAMostrar }
@@ -444,7 +456,7 @@ class Cuerpo extends React.Component {
 }
 
 class Menu extends React.Component {
-    
+
     onSelect(path) {
         window.location.href = path;
     }
@@ -478,6 +490,18 @@ class Contenedor extends React.Component {
     }
 }
 
+class ContenedorBienvenidaPlataforma extends React.Component {
+    render() {
+        return <Container fluid style={{height: "calc(100vh - 78px)"}}>
+            <Row style={{textAlign: "center"}}>
+                <Col md={{ span: 4, offset: 4 }} style={{marginTop: "140px"}}>
+                    <PanelLogin/>
+                </Col>
+            </Row>
+        </Container>;
+    }
+}
+
 export default class App extends React.Component {
 
     render() {
@@ -496,6 +520,7 @@ export default class App extends React.Component {
                             <Route path={ PATH_MOSTRAR_COLORES } exact render={() => <Contenedor />} />
                             <Route path={ PATH_REALIZAR_OPERACIONES_ARITMETICAS } exact render={() => <Contenedor />} />
                             <Route path={ PATH_RENOMBRAR_UN_CONJUNTO_DE_ARCHIVOS } exact render={() => <Contenedor />} />
+                            <Route path={ PATH_LOGIN } exact render={() => <ContenedorBienvenidaPlataforma />} />
                         </Switch>
                     </CSSTransition>
                 </TransitionGroup>
