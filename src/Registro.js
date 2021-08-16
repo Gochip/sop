@@ -1,20 +1,21 @@
 import React from 'react'
 
-export class PanelLogin extends React.Component {
+export class PanelRegistro extends React.Component {
 
-  irAlRegistro() {
-    window.location.href = "/registro";
-  }
-
-  iniciarSesion() {
+  registrarse() {
     var usuario = document.getElementById('txtUsuario').value;
     var clave = document.getElementById('txtClave').value;
+    var repetirClave = document.getElementById('txtRepetirClave').value;
+    if (clave !== repetirClave) {
+
+      return;
+    }
     const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ usuario: usuario, clave: clave })
     };
-    fetch("http://localhost:3000/sop/backend/ctrl/ajax/iniciar_sesion.php", requestOptions)
+    fetch("http://localhost:3000/sop/backend/ctrl/ajax/registrarse.php", requestOptions)
           .then(res => res.json())
           .then(
             (result) => {
@@ -24,6 +25,7 @@ export class PanelLogin extends React.Component {
                 document.getElementById("lblUsuarioOClaveIncorrecta").classList.remove("d-none");
                 document.getElementById('txtUsuario').value = "";
                 document.getElementById('txtClave').value = "";
+                console.log(result);
               }
             },
             // Nota: es importante manejar errores aquí y no en
@@ -37,10 +39,14 @@ export class PanelLogin extends React.Component {
           });
   }
 
+  volverAIniciarSesion() {
+    window.location.href = "/login";
+  }
+
   render() {
     return (
       <div>
-          <h3>Panel para iniciar sesión</h3>
+          <h3>Registrarse</h3>
           <label id="lblUsuarioOClaveIncorrecta" className="alert alert-warning d-none">Usuario o clave incorrecta</label>
           <div className="mb-3">
               <label for="txtUsuario" className="form-label">Usuario</label>
@@ -50,8 +56,12 @@ export class PanelLogin extends React.Component {
               <label for="txtClave" className="form-label">Clave</label>
               <input type="password" className="form-control" id="txtClave" />
           </div>
-          <button style={{marginRight: "10px"}} className={"btn btn-dark"} onClick={this.iniciarSesion}>Iniciar sesión</button>
-          <button style={{marginLeft: "10px"}} className={"btn btn-dark"} onClick={this.irAlRegistro}>Registrarse</button>
+          <div className="mb-3">
+              <label for="txtClave" className="form-label">Repetir clave</label>
+              <input type="password" className="form-control" id="txtRepetirClave" />
+          </div>
+          <button style={{marginRight: "10px"}} className={"btn btn-dark"} onClick={this.volverAIniciarSesion}>Volver</button>
+          <button style={{marginLeft: "10px"}} className={"btn btn-dark"}>Registrarse</button>
       </div>
       );
   }

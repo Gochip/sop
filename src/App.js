@@ -8,6 +8,7 @@ import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import { PanelLogin } from './Login'
+import { PanelRegistro } from './Registro'
 import { Desafios } from './Desafios'
 import { MenuNavegacion } from './MenuNavegacion'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -32,6 +33,7 @@ const PATH_REALIZAR_OPERACIONES_ARITMETICAS = '/realizar-operaciones-aritmeticas
 const PATH_RENOMBRAR_UN_CONJUNTO_DE_ARCHIVOS = '/renombrar-un-conjunto-de-archivos'
 const PATH_LOGIN = "/login"
 const PATH_DESAFIOS= "/desafios"
+const PATH_REGISTRO = "/registro"
 
 
 // Contenidos de cada enlace de información.
@@ -505,6 +507,18 @@ class ContenedorBienvenidaPlataforma extends React.Component {
     }
 }
 
+class ContenedorRegistroPlataforma extends React.Component {
+    render() {
+        return <Container fluid style={{height: "calc(100vh - 78px)"}}>
+            <Row style={{textAlign: "center"}}>
+                <Col md={{ span: 4, offset: 4 }} style={{marginTop: "60px"}}>
+                    <PanelRegistro/>
+                </Col>
+            </Row>
+        </Container>;
+    }
+}
+
 class ContenedorDesafios extends React.Component {
     render() {
         return (
@@ -542,6 +556,7 @@ export default class App extends React.Component {
                             <Route path={ PATH_RENOMBRAR_UN_CONJUNTO_DE_ARCHIVOS } exact render={() => <Contenedor />} />
                             <Route path={ PATH_LOGIN } exact render={() => <ContenedorBienvenidaPlataforma />} />
                             <Route path={ PATH_DESAFIOS } exact render={() => <ContenedorDesafios />} />
+                            <Route path={ PATH_REGISTRO } exact render={() => <ContenedorRegistroPlataforma />} />
                         </Switch>
                     </CSSTransition>
                 </TransitionGroup>
