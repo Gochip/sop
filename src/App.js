@@ -7,7 +7,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
 import { TransitionGroup, CSSTransition } from "react-transition-group";
-import{ PanelLogin } from './Login'
+import { PanelLogin } from './Login'
+import { Desafios } from './Desafios'
+import { MenuNavegacion } from './MenuNavegacion'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 /*import ReactGA from 'react-ga';
@@ -29,12 +31,13 @@ const PATH_MOSTRAR_COLORES = "/mostrar-colores";
 const PATH_REALIZAR_OPERACIONES_ARITMETICAS = '/realizar-operaciones-aritmeticas'
 const PATH_RENOMBRAR_UN_CONJUNTO_DE_ARCHIVOS = '/renombrar-un-conjunto-de-archivos'
 const PATH_LOGIN = "/login"
+const PATH_DESAFIOS= "/desafios"
 
 
 // Contenidos de cada enlace de información.
 class ContenidoInicio extends React.Component {
     irAPracticar() {
-        window.location.href = "login"
+        window.location.href = "/login"
     }
 
     render() {
@@ -52,7 +55,7 @@ class ContenidoInicio extends React.Component {
                 ¡Quiero practicar Bash ahora mismo!
             </h4>
             <div style={{textAlign: "center", marginTop: 15 + "px"}}>
-                <button type="button" onClick={this.irAPracticar}>Practicar</button>
+                <button type="button" className={"btn btn-dark"} onClick={this.irAPracticar}>Practicar</button>
             </div>
             </div>
         );
@@ -502,6 +505,23 @@ class ContenedorBienvenidaPlataforma extends React.Component {
     }
 }
 
+class ContenedorDesafios extends React.Component {
+    render() {
+        return (
+          <div>
+              <MenuNavegacion />
+              <Container fluid style={{height: "calc(100vh - 78px)"}}>
+                  <Row style={{textAlign: "center"}}>
+                      <Col md={{ span: 10, offset: 1 }} style={{marginTop: "60px"}}>
+                          <Desafios/>
+                      </Col>
+                  </Row>
+              </Container>
+            </div>
+          );
+    }
+}
+
 export default class App extends React.Component {
 
     render() {
@@ -521,6 +541,7 @@ export default class App extends React.Component {
                             <Route path={ PATH_REALIZAR_OPERACIONES_ARITMETICAS } exact render={() => <Contenedor />} />
                             <Route path={ PATH_RENOMBRAR_UN_CONJUNTO_DE_ARCHIVOS } exact render={() => <Contenedor />} />
                             <Route path={ PATH_LOGIN } exact render={() => <ContenedorBienvenidaPlataforma />} />
+                            <Route path={ PATH_DESAFIOS } exact render={() => <ContenedorDesafios />} />
                         </Switch>
                     </CSSTransition>
                 </TransitionGroup>
