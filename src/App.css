@@ -74,6 +74,11 @@ p {
     transition: opacity 300ms ease-in;
 }
 
+.contenedor-principal {
+  background-image: url('/bg.jpg');
+  background-size: cover;
+}
+
 @media screen and (max-width: 424px) {
     .menu-lateral {
         padding-bottom: 20px;

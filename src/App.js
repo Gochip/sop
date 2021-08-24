@@ -522,9 +522,9 @@ class ContenedorRegistroPlataforma extends React.Component {
 class ContenedorEjercicios extends React.Component {
     render() {
         return (
-          <div>
+          <div className={"contenedor-principal"}>
               <MenuNavegacion />
-              <Container fluid style={{height: "calc(100vh - 78px)"}}>
+              <Container fluid>
                   <Row style={{textAlign: "center"}}>
                       <Col md={{ span: 10, offset: 1 }} style={{marginTop: "60px"}}>
                           <Ejercicios/>
@@ -534,6 +534,39 @@ class ContenedorEjercicios extends React.Component {
             </div>
           );
     }
+}
+
+function PrivateRoute ({ children, ...rest }) {
+  /*if (autenticado) {
+    return (
+      <Route path={ PATH_DESAFIOS } exact render={() => <ContenedorEjercicios />} />
+    )
+  } else {
+    return (
+      <Route exact render={() => <ContenedorBienvenidaPlataforma />} />
+    )
+  }*/
+}
+
+function getcookie(name = '') {
+    let cookies = document.cookie;
+    let cookiestore = {};
+
+    cookies = cookies.split(";");
+
+    if (cookies[0] == "" && cookies[0][0] == undefined) {
+        return undefined;
+    }
+
+    cookies.forEach(function(cookie) {
+        cookie = cookie.split(/=(.+)/);
+        if (cookie[0].substr(0, 1) == ' ') {
+            cookie[0] = cookie[0].substr(1);
+        }
+        cookiestore[cookie[0]] = cookie[1];
+    });
+
+    return (name !== '' ? cookiestore[name] : cookiestore);
 }
 
 export default class App extends React.Component {

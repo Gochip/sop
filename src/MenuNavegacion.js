@@ -14,7 +14,7 @@ export class MenuNavegacion extends React.Component {
                       <a className={"nav-link"} href="#">Puntuaciones</a>
                     </li>
                     <li>
-                      <a className={"nav-link"} href="#">Salir</a>
+                      <a className={"nav-link"} href="/sop/backend/ctrl/cerrar_sesion.php">Salir</a>
                     </li>
                   </ul>
                 </div>
