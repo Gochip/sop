@@ -7,7 +7,8 @@ export class PanelRegistro extends React.Component {
     var clave = document.getElementById('txtClave').value;
     var repetirClave = document.getElementById('txtRepetirClave').value;
     if (clave !== repetirClave) {
-
+      document.getElementById("lblUsuarioOClaveIncorrecta").innerHTML = "La claves no son iguales.";
+      document.getElementById("lblUsuarioOClaveIncorrecta").classList.remove("d-none");
       return;
     }
     const requestOptions = {
@@ -22,10 +23,11 @@ export class PanelRegistro extends React.Component {
               if (result.estado === "ok") {
                 window.location.href = "/desafios";
               } else {
+                document.getElementById("lblUsuarioOClaveIncorrecta").innerHTML = result.mensaje;
                 document.getElementById("lblUsuarioOClaveIncorrecta").classList.remove("d-none");
-                document.getElementById('txtUsuario').value = "";
-                document.getElementById('txtClave').value = "";
-                console.log(result);
+                document.getElementById("txtUsuario").value = "";
+                document.getElementById("txtClave").value = "";
+                document.getElementById("txtRepetirClave").value = "";
               }
             },
             // Nota: es importante manejar errores aquí y no en
@@ -61,7 +63,7 @@ export class PanelRegistro extends React.Component {
               <input type="password" className="form-control" id="txtRepetirClave" />
           </div>
           <button style={{marginRight: "10px"}} className={"btn btn-dark"} onClick={this.volverAIniciarSesion}>Volver</button>
-          <button style={{marginLeft: "10px"}} className={"btn btn-dark"}>Registrarse</button>
+          <button style={{marginLeft: "10px"}} className={"btn btn-dark"} onClick={this.registrarse}>Registrarse</button>
       </div>
       );
   }
