@@ -9,7 +9,7 @@ import Nav from 'react-bootstrap/Nav';
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import { PanelLogin } from './Login'
 import { PanelRegistro } from './Registro'
-import { Desafios } from './Desafios'
+import { Ejercicios } from './Ejercicios'
 import { MenuNavegacion } from './MenuNavegacion'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -519,7 +519,7 @@ class ContenedorRegistroPlataforma extends React.Component {
     }
 }
 
-class ContenedorDesafios extends React.Component {
+class ContenedorEjercicios extends React.Component {
     render() {
         return (
           <div>
@@ -527,7 +527,7 @@ class ContenedorDesafios extends React.Component {
               <Container fluid style={{height: "calc(100vh - 78px)"}}>
                   <Row style={{textAlign: "center"}}>
                       <Col md={{ span: 10, offset: 1 }} style={{marginTop: "60px"}}>
-                          <Desafios/>
+                          <Ejercicios/>
                       </Col>
                   </Row>
               </Container>
@@ -555,7 +555,7 @@ export default class App extends React.Component {
                             <Route path={ PATH_REALIZAR_OPERACIONES_ARITMETICAS } exact render={() => <Contenedor />} />
                             <Route path={ PATH_RENOMBRAR_UN_CONJUNTO_DE_ARCHIVOS } exact render={() => <Contenedor />} />
                             <Route path={ PATH_LOGIN } exact render={() => <ContenedorBienvenidaPlataforma />} />
-                            <Route path={ PATH_DESAFIOS } exact render={() => <ContenedorDesafios />} />
+                            <Route path={ PATH_DESAFIOS } exact render={() => <ContenedorEjercicios />} />
                             <Route path={ PATH_REGISTRO } exact render={() => <ContenedorRegistroPlataforma />} />
                         </Switch>
                     </CSSTransition>
