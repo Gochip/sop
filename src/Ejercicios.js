@@ -16,17 +16,10 @@ export class Ejercicios extends React.Component {
     };
   }
 
-  leerContenido() {
-    const modalEjercicios = <ModalEjercicios />;
-    ReactDOM.render(modalEjercicios, document.getElementById('root'));
-    /*const [modal, setModal] = useState(null)
-    const exampleModal = useRef()
-
-    useEffect(() => {
-      setModal(
-        new Modal(exampleModal.current)
-      )
-    }, [])*/
+  leerContenido(contenido) {
+    // Se usa una key random para que se vuelva a llamar al constructor del componente React.
+    const modalEjercicios = <ModalEjercicios show={true} enunciado={contenido} key={Math.random()} />;
+    ReactDOM.render(modalEjercicios, document.getElementById('modales'));
   }
 
   componentDidMount() {
@@ -80,7 +73,7 @@ export class Ejercicios extends React.Component {
                   {items.map(item => (
                     <tr key={item.id}>
                       <td>{item.titulo}</td>
-                      <td><button type="button" className={"btn btn-dark"} onClick={this.leerContenido}>Leer</button></td>
+                      <td><button type="button" className={"btn btn-dark"} onClick={() => this.leerContenido(item.contenido)}>Leer</button></td>
                       <td>{item.nivel}</td>
                       <td><button type="button" className={"btn btn-dark"}>Subir solución</button></td>
                     </tr>
@@ -113,22 +106,34 @@ export class ModalEjercicios extends React.Component {
     });
   }
 
+  componentWillUnmount() {
+    console.log("componentWillUnmount");
+  }
+
+  componentDidUpdate() {
+    console.log("componentDidUpdate");
+  }
+
   render() {
     const { show, isLoaded, items } = this.state;
+    console.log(show);
+
     return (
-      <Modal show={show}>
-        <Modal.Header closeButton>
-          <Modal.Title>Enunciado</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          TEST
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={this.cerrar}>
-            Aceptar
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    )
+      <>
+        <Modal show={show}>
+          <Modal.Header closeButton>
+            <Modal.Title>Enunciado</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {this.props.enunciado}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" onClick={this.cerrar}>
+              Aceptar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    );
   }
 }
