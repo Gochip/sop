@@ -1,4 +1,9 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
+//import { Modal } from 'bootstrap'
+//import { useState, useEffect, useRef } from 'react'
 
 
 export class Ejercicios extends React.Component {
@@ -11,12 +16,24 @@ export class Ejercicios extends React.Component {
     };
   }
 
+  leerContenido() {
+    const modalEjercicios = <ModalEjercicios />;
+    ReactDOM.render(modalEjercicios, document.getElementById('root'));
+    /*const [modal, setModal] = useState(null)
+    const exampleModal = useRef()
+
+    useEffect(() => {
+      setModal(
+        new Modal(exampleModal.current)
+      )
+    }, [])*/
+  }
+
   componentDidMount() {
     fetch("http://localhost:3000/sop/backend/ctrl/ajax/get_ejercicios.php")
       .then(res => res.json())
       .then(
         (result) => {
-          console.log(result);
           if (result.estado === "ok") {
             this.setState({
               isLoaded: true,
@@ -52,16 +69,18 @@ export class Ejercicios extends React.Component {
           return (
             <table className={"table table-dark table-striped"}>
                 <thead>
+                  <tr>
                     <th>Título</th>
                     <th>Enunciado</th>
                     <th>Nivel</th>
                     <th>Subir solución</th>
+                  </tr>
                 </thead>
                 <tbody>
                   {items.map(item => (
-                    <tr>
+                    <tr key={item.id}>
                       <td>{item.titulo}</td>
-                      <td><button type="button" className={"btn btn-dark"}>Leer</button></td>
+                      <td><button type="button" className={"btn btn-dark"} onClick={this.leerContenido}>Leer</button></td>
                       <td>{item.nivel}</td>
                       <td><button type="button" className={"btn btn-dark"}>Subir solución</button></td>
                     </tr>
@@ -73,4 +92,43 @@ export class Ejercicios extends React.Component {
 
       }
     }
+}
+
+
+export class ModalEjercicios extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      show: true,
+      isLoaded: false,
+      items: []
+    };
+    this.cerrar = this.cerrar.bind(this);
+  }
+
+  cerrar() {
+    this.setState({
+      show: false
+    });
+  }
+
+  render() {
+    const { show, isLoaded, items } = this.state;
+    return (
+      <Modal show={show}>
+        <Modal.Header closeButton>
+          <Modal.Title>Enunciado</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          TEST
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={this.cerrar}>
+            Aceptar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    )
+  }
 }
