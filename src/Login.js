@@ -2,6 +2,12 @@ import React from 'react'
 
 export class PanelLogin extends React.Component {
 
+  constructor (props) {
+    super(props);
+    this.iniciarSesion = this.iniciarSesion.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
+  }
+
   irAlRegistro() {
     window.location.href = "/registro";
   }
@@ -37,6 +43,12 @@ export class PanelLogin extends React.Component {
           });
   }
 
+  onKeyPress(event) {
+    if (event.charCode === 13) {
+      this.iniciarSesion()
+    }
+  }
+
   render() {
     return (
       <div>
@@ -48,7 +60,7 @@ export class PanelLogin extends React.Component {
           </div>
           <div className="mb-3">
               <label for="txtClave" className="form-label">Clave</label>
-              <input type="password" className="form-control" id="txtClave" />
+              <input type="password" className="form-control" id="txtClave" onKeyPress={this.onKeyPress} />
           </div>
           <button style={{marginRight: "10px"}} className={"btn btn-dark"} onClick={this.iniciarSesion}>Iniciar sesión</button>
           <button style={{marginLeft: "10px"}} className={"btn btn-dark"} onClick={this.irAlRegistro}>Registrarse</button>

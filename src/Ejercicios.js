@@ -121,7 +121,7 @@ export class ModalEjercicios extends React.Component {
     return (
       <>
         <Modal show={show}>
-          <Modal.Header closeButton>
+          <Modal.Header>
             <Modal.Title>Enunciado</Modal.Title>
           </Modal.Header>
           <Modal.Body>
