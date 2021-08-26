@@ -53,7 +53,25 @@ SQL;
         $id_insertado = $db->insert($insert, $parametros);
 
         $db->commit();
-        $resultado->set_estado("ok");
+
+        $select = <<<SQL
+                      SELECT id, nombre FROM usuarios WHERE nombre={usuario}
+SQL;
+        $parametros = ["usuario" => [$usuario, "s"]];
+
+        $result = $db->query($select, $parametros);
+        if (count($result) == 1) {
+          $id = $result[0]["id"];
+          $nombre_usuario = $result[0]["nombre"];
+          $us = new Usuario($id, $nombre_usuario, "", "");
+          $sesion->log_in($us);
+
+          $resultado->set_estado("ok");
+        } else {
+          $resultado->set_estado("error");
+          $resultado->add_dato("tipo", "error");
+          $resultado->set_mensaje("Se registró pero no se pudo iniciar sesión.");
+        }
       }
     }
   } else {
