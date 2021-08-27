@@ -28,7 +28,7 @@ export class Ejercicios extends React.Component {
   }
 
   componentDidMount() {
-    fetch("http://localhost:3000/sop/backend/ctrl/ajax/get_ejercicios.php")
+    fetch("/sop/backend/ctrl/ajax/get_ejercicios.php")
       .then(res => res.json())
       .then(
         (result) => {
@@ -168,12 +168,11 @@ export class ModalSubirSolucion extends React.Component {
           headers: { "Content-Type": "application/json" },
           body: solucion
       };
-      fetch("http://localhost:3000/sop/backend/ctrl/ajax/subir_solucion.php?id_ejercicio=1", requestOptions)
+      fetch("/sop/backend/ctrl/ajax/subir_solucion.php?id_ejercicio=1", requestOptions)
             .then(res => res.json())
             .then(
               (result) => {
                 document.getElementById("btnSubir").removeAttribute("disabled");
-                console.log(result);
                 if (result.estado === "ok") {
                   let resultado = document.getElementById("resultado");
                   resultado.innerHTML = result.datos.salida;

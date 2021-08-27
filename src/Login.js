@@ -20,7 +20,7 @@ export class PanelLogin extends React.Component {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ usuario: usuario, clave: clave })
     };
-    fetch("http://localhost:3000/sop/backend/ctrl/ajax/iniciar_sesion.php", requestOptions)
+    fetch("/sop/backend/ctrl/ajax/iniciar_sesion.php", requestOptions)
           .then(res => res.json())
           .then(
             (result) => {
