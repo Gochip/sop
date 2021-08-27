@@ -7,7 +7,7 @@ $sesion = Session::get_instance();
 $log = new log\MySqlDbLog();
 $resultado = new ResultadoJson();
 
-if (false && !$sesion->is_active()) {
+if (!$sesion->is_active()) {
     $resultado->set_estado(ResultadoJson::ESTADO_ERROR);
     $resultado->add_dato("tipo", "sesion_invalida");
     $resultado->add_dato("url", "$LOGIN_PATH");
