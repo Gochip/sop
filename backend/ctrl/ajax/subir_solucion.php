@@ -91,8 +91,13 @@ SQL;
         unlink($nombre_archivo_temporal);
 
         // Generar respuesta.
-        $resultado->set_estado(ResultadoJson::ESTADO_OK);
-        $resultado->add_dato("salida", trim($salida));
+        if (trim($salida) === "Ok") {
+          $resultado->set_estado(ResultadoJson::ESTADO_OK);
+          $resultado->add_dato("salida", "Ok");
+        } else {
+          $resultado->set_estado(ResultadoJson::ESTADO_ERROR);
+          $resultado->add_dato("salida", trim($salida));
+        }
       } else {
         $resultado->set_estado(ResultadoJson::ESTADO_ERROR);
         $resultado->add_dato("salida", "Error");

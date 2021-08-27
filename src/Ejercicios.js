@@ -18,8 +18,13 @@ export class Ejercicios extends React.Component {
 
   leerContenido(contenido) {
     // Se usa una key random para que se vuelva a llamar al constructor del componente React.
-    const modalEjercicios = <ModalEjercicios show={true} enunciado={contenido} key={Math.random()} />;
     ReactDOM.render(modalEjercicios, document.getElementById('modales'));
+    const modalEjercicios = <ModalEjercicios show={true} enunciado={contenido} key={Math.random()} />;
+  }
+
+  subirSolucion() {
+    const modalSubirSolucion = <ModalSubirSolucion key={Math.random()} />;
+    ReactDOM.render(modalSubirSolucion, document.getElementById('modales'));
   }
 
   componentDidMount() {
@@ -75,7 +80,7 @@ export class Ejercicios extends React.Component {
                       <td>{item.titulo}</td>
                       <td><button type="button" className={"btn btn-dark"} onClick={() => this.leerContenido(item.contenido)}>Leer</button></td>
                       <td>{item.nivel}</td>
-                      <td><button type="button" className={"btn btn-dark"}>Subir solución</button></td>
+                      <td><button type="button" className={"btn btn-dark"} onClick={() => this.subirSolucion()}>Subir solución</button></td>
                     </tr>
                   ))}
                 </tbody>
@@ -107,16 +112,13 @@ export class ModalEjercicios extends React.Component {
   }
 
   componentWillUnmount() {
-    console.log("componentWillUnmount");
   }
 
   componentDidUpdate() {
-    console.log("componentDidUpdate");
   }
 
   render() {
     const { show, isLoaded, items } = this.state;
-    console.log(show);
 
     return (
       <>
@@ -130,6 +132,96 @@ export class ModalEjercicios extends React.Component {
           <Modal.Footer>
             <Button variant="primary" onClick={this.cerrar}>
               Aceptar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    );
+  }
+}
+
+
+export class ModalSubirSolucion extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      show: true,
+      isLoaded: false,
+      items: []
+    };
+    this.cerrar = this.cerrar.bind(this);
+  }
+
+  cerrar() {
+    this.setState({
+      show: false
+    });
+  }
+
+  subir() {
+    let solucion = document.getElementById("txaSolucion").value;
+    if (solucion != null && solucion !== "") {
+      document.getElementById("btnSubir").setAttribute("disabled", "true");
+      const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: solucion
+      };
+      fetch("http://localhost:3000/sop/backend/ctrl/ajax/subir_solucion.php?id_ejercicio=1", requestOptions)
+            .then(res => res.json())
+            .then(
+              (result) => {
+                document.getElementById("btnSubir").removeAttribute("disabled");
+                console.log(result);
+                if (result.estado === "ok") {
+                  let resultado = document.getElementById("resultado");
+                  resultado.innerHTML = result.datos.salida;
+                  resultado.classList.remove("alert-info");
+                  resultado.classList.remove("alert-danger");
+                  resultado.classList.add("alert-success");
+                } else {
+                  let resultado = document.getElementById("resultado");
+                  resultado.innerHTML = result.datos.salida;
+                  resultado.classList.remove("alert-info");
+                  resultado.classList.remove("alert-success");
+                  resultado.classList.add("alert-danger");
+                }
+              },
+              (error) => {
+                console.log(error)
+              }
+            ).catch(error => {
+              console.log(error)
+            });
+    }
+  }
+
+  componentWillUnmount() {
+  }
+
+  componentDidUpdate() {
+  }
+
+  render() {
+    const { show, isLoaded, items } = this.state;
+
+    return (
+      <>
+        <Modal show={show} size="lg">
+          <Modal.Header>
+            <Modal.Title>Subir solución</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <textarea rows="10" className={"form-control"} id="txaSolucion"></textarea>
+            <p id="resultado" className={"alert alert-info"}>Subí tu solución y aquí verás el resultado...</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" onClick={this.subir} id="btnSubir">
+              Subir
+            </Button>
+            <Button variant="secondary" onClick={this.cerrar}>
+              Cancelar
             </Button>
           </Modal.Footer>
         </Modal>
