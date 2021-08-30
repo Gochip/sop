@@ -17,6 +17,11 @@ if (!$sesion->is_active()) {
     //$log->add_message("Sesión inactiva", log\Log::WARNING);
 } else {
 
+  function copiar_archivo_a_contenedor($id_contenedor, $ruta_origen, $ruta_destino) {
+    $cmd_copiar = 'docker cp ' . $ruta_origen . ' ' . $id_contenedor . ':' . $ruta_destino;
+    exec($cmd_copiar . ' 2>&1');
+  }
+
   $db = PoolConnectionDb::get_instance()->get_connection_db();
   try {
     // Obtengo entradas del front.
@@ -50,24 +55,41 @@ SQL;
         fwrite($mi_archivo, $solucion);
 
         // Copio el archivo de la solución al contenedor.
-        $cmd_copiar = 'docker cp ' . $nombre_archivo_temporal . ' ' . $id_contenedor . ':/' . $id_ejercicio . '.sh';
-        exec($cmd_copiar . ' 2>&1');
+        copiar_archivo_a_contenedor($id_contenedor, $nombre_archivo_temporal, '/' . $id_ejercicio . '.sh');
 
         // Doy permisos de ejecución a la solución propuesta.
         $cmd_permisos = 'docker exec ' . $id_contenedor . ' bash -c "chmod 777 /' . $id_ejercicio . '.sh"';
         exec($cmd_permisos . ' 2>&1');
 
+        // Defino variables para directorios.
+        $dir_precondiciones_origen = "precondiciones";
+        $dir_precondiciones_destino = "precondiciones";
+        $dir_ejercicios_origen = "ejercicios";
+
+        // Creo directorio de destino.
+        $cmd_creacion_dir = 'docker exec ' . $id_contenedor . ' bash -c "mkdir /' . $dir_precondiciones_destino . '"';
+        exec($cmd_creacion_dir . ' 2>&1');
+
+        // Copio precondiciones.
+        copiar_archivo_a_contenedor($id_contenedor, $dir_precondiciones_origen . '/' . $id_ejercicio, '/' . $dir_precondiciones_destino . '/' . $id_ejercicio . '.sh');
+
+        // Doy permisos de ejecución a las precondiciones.
+        $cmd_permisos = 'docker exec ' . $id_contenedor . ' bash -c "chmod +x /' . $dir_precondiciones_destino . '/' . $id_ejercicio . '.sh"';
+        exec($cmd_permisos . ' 2>&1');
+
+        // Ejecuto precondiciones.
+        /*$cmd_ejecucion = 'docker exec ' . $id_contenedor . ' bash -c "/bin/bash /' . $dir_precondiciones_destino . '/' . $id_ejercicio . '.sh"';
+        exec($cmd_ejecucion . ' 2>&1');*/
+
         // Copio juez al contenedor.
-        $cmd_copiar = 'docker cp juez ' . $id_contenedor . ':/juez';
-        exec($cmd_copiar . ' 2>&1');
+        copiar_archivo_a_contenedor($id_contenedor, 'juez', '/juez');
 
         // Doy permisos de ejecución al juez.
         $cmd_permisos = 'docker exec ' . $id_contenedor . ' bash -c "chmod 777 /juez"';
         exec($cmd_permisos . ' 2>&1');
 
         // Copio tests al contenedor.
-        $cmd_copiar = 'docker cp ' . $id_ejercicio . ' ' . $id_contenedor . ':/' . $id_ejercicio;
-        exec($cmd_copiar . ' 2>&1');
+        copiar_archivo_a_contenedor($id_contenedor, $dir_ejercicios_origen . '/' . $id_ejercicio, '/' . $id_ejercicio);
 
         // Ejecuto solución propuesta en el docker.
         ob_start();

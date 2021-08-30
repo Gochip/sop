@@ -18,12 +18,12 @@ export class Ejercicios extends React.Component {
 
   leerContenido(contenido) {
     // Se usa una key random para que se vuelva a llamar al constructor del componente React.
-    ReactDOM.render(modalEjercicios, document.getElementById('modales'));
     const modalEjercicios = <ModalEjercicios show={true} enunciado={contenido} key={Math.random()} />;
+    ReactDOM.render(modalEjercicios, document.getElementById('modales'));
   }
 
-  subirSolucion() {
-    const modalSubirSolucion = <ModalSubirSolucion key={Math.random()} />;
+  subirSolucion(idEjercicio) {
+    const modalSubirSolucion = <ModalSubirSolucion idEjercicio={idEjercicio} key={Math.random()} />;
     ReactDOM.render(modalSubirSolucion, document.getElementById('modales'));
   }
 
@@ -80,7 +80,7 @@ export class Ejercicios extends React.Component {
                       <td>{item.titulo}</td>
                       <td><button type="button" className={"btn btn-dark"} onClick={() => this.leerContenido(item.contenido)}>Leer</button></td>
                       <td>{item.nivel}</td>
-                      <td><button type="button" className={"btn btn-dark"} onClick={() => this.subirSolucion()}>Subir solución</button></td>
+                      <td><button type="button" className={"btn btn-dark"} onClick={() => this.subirSolucion(item.id)}>Subir solución</button></td>
                     </tr>
                   ))}
                 </tbody>
@@ -151,6 +151,7 @@ export class ModalSubirSolucion extends React.Component {
       items: []
     };
     this.cerrar = this.cerrar.bind(this);
+    this.subir = this.subir.bind(this);
   }
 
   cerrar() {
@@ -168,7 +169,7 @@ export class ModalSubirSolucion extends React.Component {
           headers: { "Content-Type": "application/json" },
           body: solucion
       };
-      fetch("/sop/backend/ctrl/ajax/subir_solucion.php?id_ejercicio=1", requestOptions)
+      fetch("/sop/backend/ctrl/ajax/subir_solucion.php?id_ejercicio=" + this.props.idEjercicio, requestOptions)
             .then(res => res.json())
             .then(
               (result) => {
