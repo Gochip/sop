@@ -4,6 +4,7 @@ CREATE TABLE usuarios(
 	id INT NOT NULL AUTO_INCREMENT,
 	nombre VARCHAR(80) NOT NULL,
     password BLOB NOT NULL,
+		fecha_creacion DATETIME NOT NULL,
     PRIMARY KEY (id)
 );
 
