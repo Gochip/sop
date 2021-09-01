@@ -64,9 +64,11 @@ SQL;
         // Defino variables para directorios.
         $dir_precondiciones_origen = "precondiciones";
         $dir_precondiciones_destino = "precondiciones";
+        $dir_postcondiciones_origen = "postcondiciones";
+        $dir_postcondiciones_destino = "postcondiciones";
         $dir_ejercicios_origen = "ejercicios";
 
-        // Creo directorio de destino.
+        // Creo directorio de destino de precondiciones.
         $cmd_creacion_dir = 'docker exec ' . $id_contenedor . ' bash -c "mkdir /' . $dir_precondiciones_destino . '"';
         exec($cmd_creacion_dir . ' 2>&1');
 
@@ -77,9 +79,16 @@ SQL;
         $cmd_permisos = 'docker exec ' . $id_contenedor . ' bash -c "chmod +x /' . $dir_precondiciones_destino . '/' . $id_ejercicio . '.sh"';
         exec($cmd_permisos . ' 2>&1');
 
-        // Ejecuto precondiciones.
-        /*$cmd_ejecucion = 'docker exec ' . $id_contenedor . ' bash -c "/bin/bash /' . $dir_precondiciones_destino . '/' . $id_ejercicio . '.sh"';
-        exec($cmd_ejecucion . ' 2>&1');*/
+        // Creo directorio de destino de postcondiciones.
+        $cmd_creacion_dir = 'docker exec ' . $id_contenedor . ' bash -c "mkdir /' . $dir_postcondiciones_destino . '"';
+        exec($cmd_creacion_dir . ' 2>&1');
+
+        // Copio postcondiciones.
+        copiar_archivo_a_contenedor($id_contenedor, $dir_postcondiciones_origen . '/' . $id_ejercicio, '/' . $dir_postcondiciones_destino . '/' . $id_ejercicio . '.sh');
+
+        // Doy permisos de ejecución a las postcondiciones.
+        $cmd_permisos = 'docker exec ' . $id_contenedor . ' bash -c "chmod +x /' . $dir_postcondiciones_destino . '/' . $id_ejercicio . '.sh"';
+        exec($cmd_permisos . ' 2>&1');
 
         // Copio juez al contenedor.
         copiar_archivo_a_contenedor($id_contenedor, 'juez', '/juez');
@@ -92,6 +101,7 @@ SQL;
         copiar_archivo_a_contenedor($id_contenedor, $dir_ejercicios_origen . '/' . $id_ejercicio, '/' . $id_ejercicio);
 
         // Ejecuto solución propuesta en el docker.
+        // La solución se ejecuta como root y en el directorio /.
         ob_start();
         $cmd = 'docker exec ' . $id_contenedor . ' bash -c "/bin/bash /juez ' . $id_ejercicio . '"';
         $salidas = null;
