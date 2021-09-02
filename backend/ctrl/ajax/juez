@@ -7,14 +7,14 @@ error="no"
 test_incorrecto=-1
 i=0
 input=""
-output=""
+mensaje_error=""
 while IFS= read -r linea;
 do
         input=$linea
         ./precondiciones/$1.sh $caso > /dev/null 2> /dev/null
         $input > /tmp/file_output_juez 2> /dev/null
         salida=`cat /tmp/file_output_juez`
-        ./postcondiciones/$1.sh $caso 2>&1 /dev/null
+        mensaje_error=`./postcondiciones/$1.sh $caso 2> /dev/null`
 
         if [[ $? -ne 0 ]]
         then
@@ -28,7 +28,13 @@ done <<< "$tests"
 
 if [[ $error = "si" ]]
 then
-        echo "Falló el test número: $test_incorrecto."
+  if [[ -z $mensaje_error ]]
+  then
+    echo "Falló el test número: $test_incorrecto."
+  else
+    echo "Falló el test número: $test_incorrecto. Ayuda: '$mensaje_error'."
+    # Agregar: para ver la salida de tu script: '$salida'
+  fi
 else
-        echo "Ok"
+  echo "Ok"
 fi
