@@ -10,31 +10,25 @@ input=""
 output=""
 while IFS= read -r linea;
 do
-        let r=$i%2
-        if [[ $r -eq 1 ]]
-        then
-                output=$linea
-                ./precondiciones/$1.sh $caso > /dev/null 2> /dev/null
-                $input > /tmp/file_output_juez 2> /dev/null
-                salida=`cat /tmp/file_output_juez`
-                ./postcondiciones/$1.sh $caso 2>&1 /dev/null
+        input=$linea
+        ./precondiciones/$1.sh $caso > /dev/null 2> /dev/null
+        $input > /tmp/file_output_juez 2> /dev/null
+        salida=`cat /tmp/file_output_juez`
+        ./postcondiciones/$1.sh $caso 2>&1 /dev/null
 
-                if [[ $? -ne 0 ]]
-                then
-                        error="si"
-                        test_incorrecto=$caso
-                        break
-                fi
-                let caso=$caso+1
-        else
-                input=$linea
+        if [[ $? -ne 0 ]]
+        then
+                error="si"
+                test_incorrecto=$caso
+                break
         fi
+        let caso=$caso+1
         let i=$i+1
 done <<< "$tests"
 
 if [[ $error = "si" ]]
 then
-        echo "Falló el test número: $test_incorrecto. Se esperaba '$output' y el resultado fue '$salida'."
+        echo "Falló el test número: $test_incorrecto."
 else
         echo "Ok"
 fi
