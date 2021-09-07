@@ -39,96 +39,157 @@ SQL;
 
       $result = $db->query($select, $parametros);
       if (count($result) == 1) {
-        // Creo el contenedor.
-        $id_contenedor = null;
-        ob_start();
-        exec("docker run -d -it ubuntu bash 2>&1", $id_contenedor);
-        $result = ob_get_contents();
-        ob_end_clean();
+        // Obtengo estado pendiente de evaluación.
+        $select = <<<SQL
+          SELECT id FROM estados_envio
+          WHERE clave='pendiente_evaluacion'
+SQL;
+        $result = $db->query($select, []);
+        if (count($result) == 1) {
+          $id_estado = $result[0]["id"];
+          $usuario = $sesion->get_user();
+          $id_usuario = $usuario->get_id();
+          $insert = <<<SQL
+            INSERT INTO envios (id_ejercicio, id_usuario, id_estado, fecha_hora_envio, contenido)
+            VALUES ({id_ejercicio}, {id_usuario}, {id_estado}, NOW(), {contenido})
+SQL;
+          $parametros = ["id_ejercicio" => [$id_ejercicio, 'i'],
+                         "id_usuario" => [$id_usuario, 'i'],
+                         "id_estado" => [$id_estado, 'i'],
+                         "contenido" => [$solucion, 's']
+                       ];
+          $id_envio_insertado = $db->insert($insert, $parametros);
 
-        // Guardo el id_contenedor.
-        $id_contenedor = $id_contenedor[0];
+          // Creo el contenedor.
+          $id_contenedor = null;
+          ob_start();
+          exec("docker run -d -it ubuntu bash 2>&1", $id_contenedor);
+          $result = ob_get_contents();
+          ob_end_clean();
 
-        // Creo un archivo temporal con la solución propuesta.
-        $nombre_archivo_temporal = "nombre_temporal_" . $id_contenedor;
-        $mi_archivo = fopen($nombre_archivo_temporal, "w");
-        fwrite($mi_archivo, $solucion);
+          // Guardo el id_contenedor.
+          $id_contenedor = $id_contenedor[0];
 
-        // Copio el archivo de la solución al contenedor.
-        copiar_archivo_a_contenedor($id_contenedor, $nombre_archivo_temporal, '/' . $id_ejercicio . '.sh');
+          // Creo un archivo temporal con la solución propuesta.
+          $nombre_archivo_temporal = "nombre_temporal_" . $id_contenedor;
+          $mi_archivo = fopen($nombre_archivo_temporal, "w");
+          fwrite($mi_archivo, $solucion);
 
-        // Doy permisos de ejecución a la solución propuesta.
-        $cmd_permisos = 'docker exec ' . $id_contenedor . ' bash -c "chmod 777 /' . $id_ejercicio . '.sh"';
-        exec($cmd_permisos . ' 2>&1');
+          // Copio el archivo de la solución al contenedor.
+          copiar_archivo_a_contenedor($id_contenedor, $nombre_archivo_temporal, '/' . $id_ejercicio . '.sh');
 
-        // Defino variables para directorios.
-        $dir_precondiciones_origen = "precondiciones";
-        $dir_precondiciones_destino = "precondiciones";
-        $dir_postcondiciones_origen = "postcondiciones";
-        $dir_postcondiciones_destino = "postcondiciones";
-        $dir_ejercicios_origen = "ejercicios";
+          // Doy permisos de ejecución a la solución propuesta.
+          $cmd_permisos = 'docker exec ' . $id_contenedor . ' bash -c "chmod 777 /' . $id_ejercicio . '.sh"';
+          exec($cmd_permisos . ' 2>&1');
 
-        // Creo directorio de destino de precondiciones.
-        $cmd_creacion_dir = 'docker exec ' . $id_contenedor . ' bash -c "mkdir /' . $dir_precondiciones_destino . '"';
-        exec($cmd_creacion_dir . ' 2>&1');
+          // Defino variables para directorios.
+          $dir_precondiciones_origen = "precondiciones";
+          $dir_precondiciones_destino = "precondiciones";
+          $dir_postcondiciones_origen = "postcondiciones";
+          $dir_postcondiciones_destino = "postcondiciones";
+          $dir_ejercicios_origen = "ejercicios";
 
-        // Copio precondiciones.
-        copiar_archivo_a_contenedor($id_contenedor, $dir_precondiciones_origen . '/' . $id_ejercicio, '/' . $dir_precondiciones_destino . '/' . $id_ejercicio . '.sh');
+          // Creo directorio de destino de precondiciones.
+          $cmd_creacion_dir = 'docker exec ' . $id_contenedor . ' bash -c "mkdir /' . $dir_precondiciones_destino . '"';
+          exec($cmd_creacion_dir . ' 2>&1');
 
-        // Doy permisos de ejecución a las precondiciones.
-        $cmd_permisos = 'docker exec ' . $id_contenedor . ' bash -c "chmod +x /' . $dir_precondiciones_destino . '/' . $id_ejercicio . '.sh"';
-        exec($cmd_permisos . ' 2>&1');
+          // Copio precondiciones.
+          copiar_archivo_a_contenedor($id_contenedor, $dir_precondiciones_origen . '/' . $id_ejercicio, '/' . $dir_precondiciones_destino . '/' . $id_ejercicio . '.sh');
 
-        // Creo directorio de destino de postcondiciones.
-        $cmd_creacion_dir = 'docker exec ' . $id_contenedor . ' bash -c "mkdir /' . $dir_postcondiciones_destino . '"';
-        exec($cmd_creacion_dir . ' 2>&1');
+          // Doy permisos de ejecución a las precondiciones.
+          $cmd_permisos = 'docker exec ' . $id_contenedor . ' bash -c "chmod +x /' . $dir_precondiciones_destino . '/' . $id_ejercicio . '.sh"';
+          exec($cmd_permisos . ' 2>&1');
 
-        // Copio postcondiciones.
-        copiar_archivo_a_contenedor($id_contenedor, $dir_postcondiciones_origen . '/' . $id_ejercicio, '/' . $dir_postcondiciones_destino . '/' . $id_ejercicio . '.sh');
+          // Creo directorio de destino de postcondiciones.
+          $cmd_creacion_dir = 'docker exec ' . $id_contenedor . ' bash -c "mkdir /' . $dir_postcondiciones_destino . '"';
+          exec($cmd_creacion_dir . ' 2>&1');
 
-        // Doy permisos de ejecución a las postcondiciones.
-        $cmd_permisos = 'docker exec ' . $id_contenedor . ' bash -c "chmod +x /' . $dir_postcondiciones_destino . '/' . $id_ejercicio . '.sh"';
-        exec($cmd_permisos . ' 2>&1');
+          // Copio postcondiciones.
+          copiar_archivo_a_contenedor($id_contenedor, $dir_postcondiciones_origen . '/' . $id_ejercicio, '/' . $dir_postcondiciones_destino . '/' . $id_ejercicio . '.sh');
 
-        // Copio juez al contenedor.
-        copiar_archivo_a_contenedor($id_contenedor, 'juez', '/juez');
+          // Doy permisos de ejecución a las postcondiciones.
+          $cmd_permisos = 'docker exec ' . $id_contenedor . ' bash -c "chmod +x /' . $dir_postcondiciones_destino . '/' . $id_ejercicio . '.sh"';
+          exec($cmd_permisos . ' 2>&1');
 
-        // Doy permisos de ejecución al juez.
-        $cmd_permisos = 'docker exec ' . $id_contenedor . ' bash -c "chmod 777 /juez"';
-        exec($cmd_permisos . ' 2>&1');
+          // Copio juez al contenedor.
+          copiar_archivo_a_contenedor($id_contenedor, 'juez', '/juez');
 
-        // Copio tests al contenedor.
-        copiar_archivo_a_contenedor($id_contenedor, $dir_ejercicios_origen . '/' . $id_ejercicio, '/' . $id_ejercicio);
+          // Doy permisos de ejecución al juez.
+          $cmd_permisos = 'docker exec ' . $id_contenedor . ' bash -c "chmod 777 /juez"';
+          exec($cmd_permisos . ' 2>&1');
 
-        // Ejecuto solución propuesta en el docker.
-        // La solución se ejecuta como root y en el directorio /.
-        ob_start();
-        $cmd = 'docker exec ' . $id_contenedor . ' bash -c "/bin/bash /juez ' . $id_ejercicio . '"';
-        $salidas = null;
-        exec($cmd . ' 2>&1', $salidas);
-        $result = ob_get_contents();
-        ob_end_clean();
+          // Copio tests al contenedor.
+          copiar_archivo_a_contenedor($id_contenedor, $dir_ejercicios_origen . '/' . $id_ejercicio, '/' . $id_ejercicio);
 
-        // Verifico salidas de la solución propuesta.
-        $salida = "";
-        foreach ($salidas as $s) {
-          $salida .= $s;
-        }
+          // Ejecuto solución propuesta en el docker.
+          // La solución se ejecuta como root y en el directorio /.
+          ob_start();
+          $cmd = 'docker exec ' . $id_contenedor . ' bash -c "/bin/bash /juez ' . $id_ejercicio . '"';
+          $salidas = null;
+          exec($cmd . ' 2>&1', $salidas);
+          $result = ob_get_contents();
+          ob_end_clean();
 
-        // Limpiar contenedor.
-        $cmd = 'docker container stop ' . $id_contenedor;
-        exec($cmd . ' 2>&1');
+          // Verifico salidas de la solución propuesta.
+          $salida = "";
+          foreach ($salidas as $s) {
+            $salida .= $s;
+          }
 
-        // Eliminar archivo temporal.
-        unlink($nombre_archivo_temporal);
+          // Limpiar contenedor.
+          $cmd = 'docker container stop ' . $id_contenedor;
+          exec($cmd . ' 2>&1');
 
-        // Generar respuesta.
-        if (trim($salida) === "Ok") {
-          $resultado->set_estado(ResultadoJson::ESTADO_OK);
-          $resultado->add_dato("salida", "Ok");
+          // Eliminar archivo temporal.
+          unlink($nombre_archivo_temporal);
+
+          // Generar respuesta.
+          if (trim($salida) === "Ok") {
+            // Establezco el estado de aceptación.
+            $select = <<<SQL
+              SELECT id FROM estados_envio
+              WHERE clave='aceptado'
+SQL;
+            $result = $db->query($select, []);
+            if (count($result) == 1) {
+              $id_estado_aceptado = $result[0]["id"];
+              $update = <<<SQL
+                UPDATE envios SET fecha_hora_dictamen=NOW(), id_estado={$id_estado_aceptado}
+                WHERE id={$id_envio_insertado}
+SQL;
+              $parametros = ["id_envio_insertado" => [$id_envio_insertado, 'i'],
+                             "id_estado_aceptado" => [$id_estado_aceptado, 'i']
+                           ];
+              $db->update($update, $parametros);
+            }
+
+            $resultado->set_estado(ResultadoJson::ESTADO_OK);
+            $resultado->add_dato("salida", "Ok");
+          } else {
+            // Establezco el estado de error.
+            $select = <<<SQL
+              SELECT id FROM estados_envio
+              WHERE clave='error'
+SQL;
+            $result = $db->query($select, []);
+            if (count($result) == 1) {
+              $id_estado_error = $result[0]["id"];
+              $update = <<<SQL
+                UPDATE envios SET fecha_hora_dictamen=NOW(), id_estado={$id_estado_error}
+                WHERE id={$id_envio_insertado}
+SQL;
+              $parametros = ["id_envio_insertado" => [$id_envio_insertado, 'i'],
+                             "id_estado_error" => [$id_estado_error, 'i']
+                           ];
+              $db->update($update, $parametros);
+            }
+
+            $resultado->set_estado(ResultadoJson::ESTADO_ERROR);
+            $resultado->add_dato("salida", trim($salida));
+          }
         } else {
           $resultado->set_estado(ResultadoJson::ESTADO_ERROR);
-          $resultado->add_dato("salida", trim($salida));
+          $resultado->add_dato("salida", "Error");
         }
       } else {
         $resultado->set_estado(ResultadoJson::ESTADO_ERROR);
