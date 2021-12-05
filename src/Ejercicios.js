@@ -68,6 +68,7 @@ export class Ejercicios extends React.Component {
             <table className={"table table-dark table-striped"}>
                 <thead>
                   <tr>
+                    <th>#</th>
                     <th>Título</th>
                     <th>Enunciado</th>
                     <th>Nivel</th>
@@ -75,8 +76,10 @@ export class Ejercicios extends React.Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {items.map(item => (
+                  {
+                    items.map((item, index) => (
                     <tr key={item.id}>
+                      <td>{index + 1}</td>
                       <td>{item.titulo}</td>
                       <td><button type="button" className={"btn btn-dark"} onClick={() => this.leerContenido(item.contenido)}>Leer</button></td>
                       <td>{item.nivel}</td>
@@ -86,8 +89,11 @@ export class Ejercicios extends React.Component {
                 </tbody>
             </table>
           )
+        } else {
+          return (
+            <span></span>
+          )
         }
-
       }
     }
 }

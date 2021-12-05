@@ -8,10 +8,10 @@ export class MenuNavegacion extends React.Component {
                 <div className={"collapse navbar-collapse"}>
                     <ul className={"navbar-nav me-auto mb-2 mb-lg-0"}>
                     <li className={"nav-item"}>
-                      <a className={"nav-link active"} aria-current="page" href="#">Desafíos</a>
+                      <a className={"nav-link active"} aria-current="page" href="/desafios">Desafíos</a>
                     </li>
                     <li className={"nav-item"}>
-                      <a className={"nav-link"} href="#">Puntuaciones</a>
+                      <a className={"nav-link"} href="/puntuaciones">Puntuaciones</a>
                     </li>
                     <li>
                       <a className={"nav-link"} href="/sop/backend/ctrl/cerrar_sesion.php">Salir</a>
